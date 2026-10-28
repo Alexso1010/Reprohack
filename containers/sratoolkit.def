@@ -1,0 +1,9 @@
+Bootstrap: docker
+From: mambaorg/micromamba:1.5.8
+
+%post
+    micromamba install -y -n base -c conda-forge -c bioconda sra-tools
+    micromamba clean --all --yes
+
+%environment
+    export PATH=/opt/conda/bin:$PATH
