@@ -44,9 +44,11 @@ rule bowtie_index:
 	input= "data/reference.fasta"
 	output: INDEX_FILES
 	params: prefix=INDEX_PREFIX #valeur fixe passée à la commande (ni fichier d'entrée ni de sortie) pour que la règle retrouve les fichiers elle même 
-	log: "logs/bowtie_index.sif"
+	log: "logs/bowtie_index.log"
+	container: "container/bowtie_1.3.1.img" #version de bowtie à modifier
 	shell: "bowtie-build {input} {params.prefix} > {log} 2>&1"
 # Pas de {sample}, l'index est construit une seule fois seulement puis partagé par tous les échantillons
+
 
 rule bowtie_map:
 	"""Mapping des lectures triées, tri, et indexation du BAM"
