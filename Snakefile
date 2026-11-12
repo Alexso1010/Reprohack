@@ -16,8 +16,8 @@ INDEX_FILES = multiext(
 #   - Fig. 3c      : MA-plot des gènes liés à la traduction
 rule all:
     input:
-        "results/figures/MA_plot_all.png",
-        "results/figures/MA_plot_translation.png"
+        "results/figures/MA_plot_all.pdf",
+        "results/figures/MA_plot_translation.pdf"
 
 # Cible du rendu intermédiaire (13 novembre) : données + génome + index
 #   lancer avec :  snakemake --use-apptainer --cores 4 midterm
@@ -134,8 +134,8 @@ rule deseq2:
         gff="data/reference.gff"
     output:
         table="results/deseq2/deseq2_results.csv",
-        ma_all="results/figures/MA_plot_all.png",
-        ma_translation="results/figures/MA_plot_translation.png"
+        ma_all="results/figures/MA_plot_all.pdf",
+        ma_translation="results/figures/MA_plot_translation.pdf"
     params:
         # "SRR1:persister,SRR2:control,..." construit depuis config.yaml
         samples=",".join(f"{s}:{c}" for s, c in config["samples"].items())

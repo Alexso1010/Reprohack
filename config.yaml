@@ -1,9 +1,6 @@
 # Configuration du workflow (Projet 1 : cellules persistantes de S. aureus)
 # Données : GEO GSE139659 (3 persisters + 3 contrôles).
-# TODO : retrouver les SRR dans SRA Run Selector et remplacer les XXXXXXX.
 
-# SRR -> condition ("persister" ou "control").
-# Pour développer vite : garder UN seul échantillon, décommenter les autres ensuite.
 # (Attention : DESeq2 a besoin d'au moins 2 réplicats par condition pour les vrais résultats.)
 samples:
   SRR10379721: persister
@@ -14,6 +11,8 @@ samples:
   SRR10379726: control
 
 # Voies KEGG (organisme "sao" = S. aureus NCTC 8325) pour les gènes "traduction".
+
 # Hypothèse : sao03010 = Ribosome, sao00970 = Aminoacyl-tRNA biosynthesis.
+
 # L'article ne précise pas la liste exacte -> à discuter et à justifier dans le rapport.
 kegg_pathways: "sao03010 sao00970"

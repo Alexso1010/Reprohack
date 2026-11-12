@@ -1,0 +1,12 @@
+Status	results/mapping/SRR10379721.bam	results/mapping/SRR10379722.bam	results/mapping/SRR10379723.bam	results/mapping/SRR10379724.bam	results/mapping/SRR10379725.bam	results/mapping/SRR10379726.bam
+Assigned	24336399	20426778	18261981	22285392	26174650	6424662
+Unassigned_Ambiguity	790897	669431	600135	664580	812611	247604
+Unassigned_MultiMapping	0	0	0	0	0	0
+Unassigned_NoFeatures	7802866	6086287	5654440	8886415	8688068	3069375
+Unassigned_Unmapped	18975680	17019743	15133569	15458902	10563846	17279802
+Unassigned_MappingQuality	0	0	0	0	0	0
+Unassigned_FragmentLength	0	0	0	0	0	0
+Unassigned_Chimera	0	0	0	0	0	0
+Unassigned_Secondary	0	0	0	0	0	0
+Unassigned_Nonjunction	0	0	0	0	0	0
+Unassigned_Duplicate	0	0	0	0	0	0

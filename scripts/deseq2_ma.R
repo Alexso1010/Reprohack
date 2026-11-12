@@ -78,7 +78,7 @@ ma_plot <- function(df, title, label = FALSE) {
 }
 
 # Supp. Fig. 3 : jeu de données complet
-png(file.path(outdir, "figures", "MA_plot_all.png"), width = 1600, height = 1200, res = 200)
+pdf(file.path(outdir, "figures", "MA_plot_all.pdf"), width = 8, height = 6)
 ma_plot(plot_df, "MA-plot - all genes")
 dev.off()
 
@@ -87,6 +87,6 @@ translation <- readLines(translation_file)
 tr_df <- plot_df[plot_df$locus %in% translation, ]
 cat(sprintf("Gènes 'traduction' retrouvés dans les résultats : %d / %d\n",
             nrow(tr_df), length(translation)))
-png(file.path(outdir, "figures", "MA_plot_translation.png"), width = 1600, height = 1200, res = 200)
+pdf(file.path(outdir, "figures", "MA_plot_translation.pdf"), width = 8, height = 6)
 ma_plot(tr_df, "MA-plot - translation-related genes", label = TRUE)
 dev.off()
