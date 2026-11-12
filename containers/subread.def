@@ -1,0 +1,13 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%post
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y --no-install-recommends ca-certificates wget
+    cd /opt
+    wget -q -O subread.tar.gz \
+      "https://sourceforge.net/projects/subread/files/subread-1.4.6-p3/subread-1.4.6-p3-Linux-x86_64.tar.gz/download"
+    tar -xzf subread.tar.gz && rm subread.tar.gz
+    ln -s /opt/subread-1.4.6-p3-Linux-x86_64/bin/featureCounts /usr/local/bin/featureCounts
+    apt-get clean && rm -rf /var/lib/apt/lists/*

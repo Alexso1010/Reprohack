@@ -1,20 +1,19 @@
-configfile: "config.yaml"
+# Configuration du workflow (Projet 1 : cellules persistantes de S. aureus)
+# Données : GEO GSE139659 (3 persisters + 3 contrôles).
+# TODO : retrouver les SRR dans SRA Run Selector et remplacer les XXXXXXX.
 
-rule all:
-    input:
-        expand("results/trimmed/{sample}.trimmed.fastq.gz", sample=config["samples"])
+# SRR -> condition ("persister" ou "control").
+# Pour développer vite : garder UN seul échantillon, décommenter les autres ensuite.
+# (Attention : DESeq2 a besoin d'au moins 2 réplicats par condition pour les vrais résultats.)
+samples:
+  SRR10379721: persister
+  SRR10379722: persister
+  SRR10379723: persister
+  SRR10379724: control
+  SRR10379725: control
+  SRR10379726: control
 
-rule download:
-    output: "data/{sample}.fastq.gz"
-    threads: 4
-    container: "containers/sratoolskit.sif"
-    shell: """
-	fasterq-dump --threads {threads} --progress {wildcards.sample} -O data/
-        gzip data/{wildcards.sample}.fastq
-        """
-
-rule trim:
-    input: "data/{sample}.fastq.gz"
-    output: "results/trimmed/{sample}.trimmed.fastq.gz"
-    container: "containers/cutadapt.sif"
-    shell: "cutadapt -q 20 -m 25 -o {output} {input}"
+# Voies KEGG (organisme "sao" = S. aureus NCTC 8325) pour les gènes "traduction".
+# Hypothèse : sao03010 = Ribosome, sao00970 = Aminoacyl-tRNA biosynthesis.
+# L'article ne précise pas la liste exacte -> à discuter et à justifier dans le rapport.
+kegg_pathways: "sao03010 sao00970"

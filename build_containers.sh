@@ -10,5 +10,8 @@ wget -nc -O containers/samtools_1.20.0.img \
   https://zenodo.org/record/23326397/files/samtools_1.20.0.img
 
 # 2. Images construites depuis nos recettes .def
-[ -f containers/cutadapt.sif ]     || apptainer build containers/cutadapt.sif containers/cutadapt.def
-[ -f containers/sratoolkit.sif ]   || apptainer build containers/sratoolkit.sif containers/sratoolkit.def
+for name in cutadapt sratoolkit utils subread deseq2; do
+    if [ ! -f "containers/${name}.sif" ]; then
+        apptainer build "containers/${name}.sif" "containers/${name}.def"
+    fi
+done
