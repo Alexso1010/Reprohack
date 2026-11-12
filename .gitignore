@@ -5,3 +5,5 @@ results/
 logs/
 logs_archive/
 .snakemake/
+.ncbi/
+.wget-hsts

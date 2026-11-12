@@ -1,15 +1,11 @@
 # Analyse différentielle (DESeq2) + MA-plots.
-# Usage : Rscript deseq2_ma.R <counts.txt> <translation_genes.txt> <SRR1:cond,SRR2:cond,...> <dossier_sortie>
-#
-# - counts.txt : sortie de featureCounts (--extraAttributes Name)
-# - contraste  : persister vs control (log2FC > 0 = plus exprimé chez les persisters)
-# - seuil      : padj < 0.05 (Benjamini-Hochberg, comme dans l'article)
+## Usage : Rscript deseq2_ma.R <counts.txt> <translation_genes.txt> <annotation.gff> <SRR1:cond,SRR2:cond,...> <dossier_sortie>
 suppressMessages(library(DESeq2))
 
 args <- commandArgs(trailingOnly = TRUE)
-if (length(args) != 4) stop("Usage : Rscript deseq2_ma.R counts translation samples outdir")
-counts_file <- args[1]; translation_file <- args[2]
-samples_arg <- args[3]; outdir <- args[4]
+if (length(args) != 5) stop("Usage : Rscript deseq2_ma.R counts translation gff samples outdir")
+counts_file <- args[1]; translation_file <- args[2]; gff_file <- args[3]
+samples_arg <- args[4]; outdir <- args[5]
 
 dir.create(file.path(outdir, "deseq2"), showWarnings = FALSE, recursive = TRUE)
 dir.create(file.path(outdir, "figures"), showWarnings = FALSE, recursive = TRUE)
@@ -36,7 +32,20 @@ counts <- as.matrix(raw[, coldata$sample, drop = FALSE])
 # Identifiant du gène : on enlève un éventuel préfixe "gene-" (GFF NCBI) pour obtenir le locus tag
 locus <- sub("^gene-", "", raw$Geneid)
 rownames(counts) <- locus
-gene_name <- if ("Name" %in% colnames(raw)) raw$Name else locus
+
+# Noms de gènes lus dans le GFF (colonne 9 : "ID=...;Name=...;...")
+gff <- read.table(gff_file, sep = "\t", quote = "", comment.char = "#",
+                  stringsAsFactors = FALSE, fill = TRUE)
+gff <- gff[gff[, 3] == "gene", ]
+get_attr <- function(attrs, key) {
+  ifelse(grepl(paste0("(^|;)", key, "="), attrs),
+         sub(paste0(".*(^|;)", key, "=([^;]*).*"), "\\2", attrs), NA)
+}
+gff_id   <- get_attr(gff[, 9], "ID")
+gff_name <- get_attr(gff[, 9], "Name")
+names_map <- setNames(ifelse(is.na(gff_name), gff_id, gff_name), sub("^gene-", "", gff_id))
+gene_name <- unname(names_map[locus])
+gene_name[is.na(gene_name)] <- locus[is.na(gene_name)]   # à défaut, on garde le locus tag
 names(gene_name) <- locus
 
 # --- 3. DESeq2

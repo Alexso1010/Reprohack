@@ -115,7 +115,7 @@ rule count:
     container: "containers/subread.sif"
     shell:
         """
-        featureCounts --extraAttributes Name -t gene -g ID -s 1 -F GTF \
+        featureCounts -t gene -g ID -s 1 -F GTF \
             -T {threads} -a {input.gff} -o {output} {input.bams} > {log} 2>&1
         """
 
@@ -130,7 +130,8 @@ rule deseq2:
     """DESeq2 (persister vs control) puis MA-plots (tout le jeu / gènes de la traduction)."""
     input:
         counts="results/counts/counts.txt",
-        translation="results/annotation/translation_genes.txt"
+        translation="results/annotation/translation_genes.txt",
+        gff="data/reference.gff"
     output:
         table="results/deseq2/deseq2_results.csv",
         ma_all="results/figures/MA_plot_all.png",
@@ -142,6 +143,6 @@ rule deseq2:
     container: "containers/deseq2.sif"
     shell:
         """
-        Rscript scripts/deseq2_ma.R {input.counts} {input.translation} \
+        Rscript scripts/deseq2_ma.R {input.counts} {input.translation} {input.gff} \
             {params.samples} results > {log} 2>&1
         """
