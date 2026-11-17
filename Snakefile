@@ -72,8 +72,8 @@ rule bowtie_index:
     output: INDEX_FILES
     params: prefix=INDEX_PREFIX   # préfixe (texte), pas un fichier : bowtie-build crée les 6 fichiers
     log: "logs/bowtie_index.log"
-    container: "containers/bowtie_1.3.1.img"   # écart avec l'article (0.12.7), à justifier dans le rapport
-    shell: "bowtie-build-s {input} {params.prefix} > {log} 2>&1"
+    container: "containers/bowtie_0.12.7.sif" 
+    shell: "bowtie-build {input} {params.prefix} > {log} 2>&1"
 
 
 rule bowtie_map:
@@ -85,9 +85,9 @@ rule bowtie_map:
     params: prefix=INDEX_PREFIX
     log: "logs/bowtie_map_{sample}.log"   # Bowtie y écrit son taux de mapping
     threads: 4
-    container: "containers/bowtie_1.3.1.img"
+    container: "containers/bowtie_0.12.7.sif"
     shell:
-        "bowtie-align-s -p {threads} -S {params.prefix} <(gunzip -c {input.reads}) > {output} 2> {log}"
+        "bowtie -p {threads} -S {params.prefix} <(gunzip -c {input.reads}) > {output} 2> {log}"
 
 
 rule samtools_sort:
