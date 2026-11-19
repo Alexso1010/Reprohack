@@ -25,7 +25,8 @@ Sorties (dans le dossier donné par -o) :
 
 Dépendances : pandas, numpy (matplotlib facultatif, pour les figures).
 """
-pip install numpy
+/Users/annagarnon/Documents/AGROPARISTECH/3AIODAA/Reproductibilite_computationnelle/Reprohack/deseq2_results.csv
+
 
 import argparse
 import json

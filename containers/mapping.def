@@ -1,0 +1,29 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%labels
+    Tools bowtie samtools
+    Bowtie_version 0.12.7
+
+%post
+    # samtools vient d'Ubuntu (version non fixée par l'article, à noter dans les hypothèses)
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        wget unzip ca-certificates perl samtools
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+    cd /opt
+    wget -q -O bowtie.zip \
+      "https://sourceforge.net/projects/bowtie-bio/files/bowtie/0.12.7/bowtie-0.12.7-linux-x86_64.zip/download"
+    unzip -q bowtie.zip
+    rm bowtie.zip
+    mv /opt/bowtie-0.12.7* /opt/bowtie
+
+%environment
+    export PATH=/opt/bowtie:$PATH
+
+%test
+    bowtie --version
+    bowtie-build --version
+    samtools --version
+    which bash gunzip

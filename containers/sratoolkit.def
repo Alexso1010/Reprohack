@@ -2,7 +2,7 @@ Bootstrap: docker
 From: mambaorg/micromamba:1.5.8
 
 %post
-    micromamba install -y -n base -c conda-forge -c bioconda sra-tools
+    micromamba install -y -n base -c conda-forge -c bioconda sra-tools pigz
     micromamba clean --all --yes
 
 %environment

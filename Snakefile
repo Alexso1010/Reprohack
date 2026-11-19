@@ -36,7 +36,7 @@ rule download:
     shell:
         """
         fasterq-dump --threads {threads} --progress {wildcards.sample} -O data/
-        gzip data/{wildcards.sample}.fastq
+        pigz -p {threads} data/{wildcards.sample}.fastq
         """
 
 
@@ -72,7 +72,7 @@ rule bowtie_index:
     output: INDEX_FILES
     params: prefix=INDEX_PREFIX   # préfixe (texte), pas un fichier : bowtie-build crée les 6 fichiers
     log: "logs/bowtie_index.log"
-    container: "containers/bowtie_0.12.7.sif" 
+    container: "containers/mapping.sif" 
     shell: "bowtie-build {input} {params.prefix} > {log} 2>&1"
 
 
@@ -81,26 +81,17 @@ rule bowtie_map:
     input:
         reads="results/trimmed/{sample}.trimmed.fastq.gz",
         index=INDEX_FILES   # le mapping ne démarre qu'une fois l'index construit
-    output: temp("results/mapping/{sample}.sam")   # temp : supprimé quand plus nécessaire
+    output: 
+        bam="results/mapping/{sample}.bam",
+        bai="results/mapping/{sample}.bam.bai"
     params: prefix=INDEX_PREFIX
     log: "logs/bowtie_map_{sample}.log"   # Bowtie y écrit son taux de mapping
     threads: 4
-    container: "containers/bowtie_0.12.7.sif"
-    shell:
-        "bowtie -p {threads} -S {params.prefix} <(gunzip -c {input.reads}) > {output} 2> {log}"
-
-
-rule samtools_sort:
-    """Trie le SAM, produit le BAM, puis l'indexe."""
-    input: "results/mapping/{sample}.sam"
-    output:
-        bam="results/mapping/{sample}.bam",
-        bai="results/mapping/{sample}.bam.bai"
-    threads: 4
-    container: "containers/samtools_1.20.0.img"
+    container: "containers/mapping.sif"
     shell:
         """
-        samtools sort -@ {threads} -o {output.bam} {input}
+        bowtie -p {threads} -S {params.prefix} <(gunzip -c {input.reads}) 2> {log} \
+            | samtools sort -@ {threads} -o {output.bam} -
         samtools index {output.bam}
         """
 
