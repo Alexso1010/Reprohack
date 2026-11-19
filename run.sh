@@ -27,4 +27,24 @@ done
 bash build_containers.sh
 
 # 3. Lancer le workflow ; les arguments éventuels (ex. -n) sont transmis à Snakemake
-snakemake --use-apptainer --cores "${CORES}" "$@"
+# --- Suivi de l'exécution ---------------------------------------------------
+mkdir -p logs
+LOG="logs/run_$(date +%Y%m%d_%H%M%S).log"
+HEARTBEAT="${HEARTBEAT:-60}"     # intervalle en secondes entre deux points
+
+heartbeat() {
+    while true; do
+        sleep "${HEARTBEAT}"
+        progress=$(grep -o '[0-9]* of [0-9]* steps ([0-9]*%) done' "$LOG" | tail -n 1)
+        echo "[$(date +%H:%M:%S)] ${progress:-démarrage...}" \
+             "| charge CPU: $(cut -d' ' -f1 /proc/loadavg)" \
+             "| RAM dispo: $(free -h | awk '/Mem:/{print $7}')" \
+             "| disque libre: $(df -h . | awk 'NR==2{print $4}')"
+    done
+}
+heartbeat &
+HB_PID=$!
+trap 'kill "$HB_PID" 2>/dev/null' EXIT     # arrête le suivi quand le script se termine
+
+# Toute la sortie de Snakemake est affichée ET enregistrée dans $LOG
+snakemake --use-apptainer --cores "${CORES}" --printshellcmds "$@" 2>&1 | tee -a "$LOG"

@@ -31,7 +31,7 @@ rule midterm:
 rule download:
     """Télécharge les FASTQ depuis la SRA (reads single-end) puis les compresse."""
     output: "data/{sample}.fastq.gz"
-    threads: 4
+    threads: 8
     container: "containers/sratoolkit.sif"
     shell:
         """
@@ -86,7 +86,7 @@ rule bowtie_map:
         bai="results/mapping/{sample}.bam.bai"
     params: prefix=INDEX_PREFIX
     log: "logs/bowtie_map_{sample}.log"   # Bowtie y écrit son taux de mapping
-    threads: 4
+    threads: 8
     container: "containers/mapping.sif"
     shell:
         """
@@ -101,7 +101,7 @@ rule count:
         bams=expand("results/mapping/{sample}.bam", sample=SAMPLES),
         gff="data/reference.gff"
     output: "results/counts/counts.txt"
-    threads: 4
+    threads: 8
     log: "logs/featurecounts.log"
     container: "containers/subread.sif"
     shell:
