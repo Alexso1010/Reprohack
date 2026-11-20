@@ -15,4 +15,5 @@ samples:
 # Hypothèse : sao03010 = Ribosome, sao00970 = Aminoacyl-tRNA biosynthesis.
 
 # L'article ne précise pas la liste exacte -> à discuter et à justifier dans le rapport.
-kegg_pathways: "sao03010 sao00970"
+kegg_pathways: "sao03010 sao00970 br:sao03012"
+# 970 à entourer en noir

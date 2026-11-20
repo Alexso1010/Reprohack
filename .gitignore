@@ -2,7 +2,6 @@
 *.img
 data/
 results/
-logs/
 logs_archive/
 .snakemake/
 .ncbi/
